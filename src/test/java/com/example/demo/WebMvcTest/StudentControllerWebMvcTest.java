@@ -1,10 +1,9 @@
 package com.example.demo.WebMvcTest;
 
 import com.example.demo.controller.StudentController;
-import com.example.demo.model.Faculty;
 import com.example.demo.model.Student;
-import com.example.demo.service.StudentService;
 
+import com.example.demo.service.StudentService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -31,15 +30,23 @@ public class StudentControllerWebMvcTest {
     private StudentService studentService;
 
     @Test
-    public void testGetStudentFaculty() throws Exception {
-        Faculty faculty = new Faculty(1L, "Gryffindor", "Red");
-        Student student = new Student(1L, "Harry", 17, faculty);
+    void testGetStudentById_Success() throws Exception {
+        Student student = new Student();
+        student.setId(1L);
+        student.setName("Harry Potter");
 
         Mockito.when(studentService.getStudentById(1L)).thenReturn(Optional.of(student));
 
-        mockMvc.perform(get("/students/1/faculty"))
+        mockMvc.perform(get("/students/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Gryffindor"))
-                .andExpect(jsonPath("$.color").value("Red"));
+                .andExpect(jsonPath("$.name").value("Harry Potter"));
+    }
+
+    @Test
+    void testGetStudentById_NotFound() throws Exception {
+        Mockito.when(studentService.getStudentById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/students/1"))
+                .andExpect(status().isNotFound());
     }
 }

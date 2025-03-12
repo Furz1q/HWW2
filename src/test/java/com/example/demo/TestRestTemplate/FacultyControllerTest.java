@@ -1,6 +1,8 @@
 package com.example.demo.TestRestTemplate;
 
-import com.example.demo.model.Student;
+import com.example.demo.model.Faculty;
+import com.example.demo.repository.FacultyRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,30 @@ public class FacultyControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private FacultyRepository facultyRepository;
+
+    @BeforeEach
+    void setUp() {
+        facultyRepository.deleteAll();
+    }
+
     @Test
-    public void testGetStudentsByFaculty() {
-        ResponseEntity<Student[]> response = restTemplate.getForEntity("/faculties/1/students", Student[].class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+    void testCreateFaculty() {
+        Faculty faculty = new Faculty();
+        faculty.setName("Gryffindor");
+        faculty.setColor("Red");
+
+        ResponseEntity<Faculty> response = restTemplate.postForEntity("/faculties", faculty, Faculty.class);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
+        assertEquals("Gryffindor", response.getBody().getName());
+    }
+
+    @Test
+    void testGetFacultyById_NotFound() {
+        ResponseEntity<Faculty> response = restTemplate.getForEntity("/faculties/999", Faculty.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }

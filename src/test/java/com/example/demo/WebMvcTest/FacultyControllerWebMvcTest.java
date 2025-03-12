@@ -15,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,18 +32,23 @@ public class FacultyControllerWebMvcTest {
     private FacultyService facultyService;
 
     @Test
-    public void testGetStudentsByFaculty() throws Exception {
-        Faculty faculty = new Faculty(1L, "Gryffindor", "Red");
-        Student student1 = new Student(1L, "Harry", 17, faculty);
-        Student student2 = new Student(2L, "Ron", 17, faculty);
+    void testGetFacultyById_Success() throws Exception {
+        Faculty faculty = new Faculty();
+        faculty.setId(1L);
+        faculty.setName("Gryffindor");
 
-        faculty.setStudents(List.of(student1, student2));
         Mockito.when(facultyService.getFacultyById(1L)).thenReturn(Optional.of(faculty));
 
-        mockMvc.perform(get("/faculties/1/students"))
+        mockMvc.perform(get("/faculties/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("Harry"))
-                .andExpect(jsonPath("$[1].name").value("Ron"));
+                .andExpect(jsonPath("$.name").value("Gryffindor"));
+    }
+
+    @Test
+    void testGetFacultyById_NotFound() throws Exception {
+        Mockito.when(facultyService.getFacultyById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/faculties/1"))
+                .andExpect(status().isNotFound());
     }
 }

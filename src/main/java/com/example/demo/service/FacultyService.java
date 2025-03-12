@@ -19,10 +19,20 @@ public class FacultyService {
     }
 
     public List<Faculty> searchFaculties(String name, String color) {
-        return facultyRepository.findByNameIgnoreCaseContainingOrColorIgnoreCaseContaining(name, color);
+        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(name, color);
     }
 
     public Optional<Faculty> getFacultyById(Long id) {
         return facultyRepository.findById(id);
+    }
+    public Faculty createFaculty(Faculty faculty) {
+        return facultyRepository.save(faculty);
+    }
+    public boolean deleteFaculty(Long id) {
+        if (facultyRepository.existsById(id)) {
+            facultyRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

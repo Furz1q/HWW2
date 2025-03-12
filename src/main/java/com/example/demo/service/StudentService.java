@@ -24,4 +24,14 @@ public class StudentService {
     public Optional<Student> getStudentById(Long id) {
         return studentRepository.findById(id);
     }
+    public Student createStudent(Student student) {
+        return studentRepository.save(student);
+    }
+    public boolean deleteStudent(Long id) {
+        if (studentRepository.existsById(id)) {
+            studentRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }
