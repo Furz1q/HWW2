@@ -105,11 +105,11 @@ public class StudentControllerWebMvcTest {
     }
 
     @Test
-    public void testDeleteStudent() throws Exception {
-        doNothing().when(studentService).deleteStudent(1L);
+    public void testDeleteStudent_Success() throws Exception {
+        when(studentService.deleteStudent(1L)).thenReturn(true);
 
         mockMvc.perform(delete("/students/1"))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Test
