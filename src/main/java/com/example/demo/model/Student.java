@@ -18,7 +18,7 @@ public class Student {
 
     public Student() {}
 
-    public Student(long l, String name, int age, Faculty faculty) {
+    public Student(Long l, String name, int age, Faculty faculty) {
         this.name = name;
         this.age = age;
         this.faculty = faculty;

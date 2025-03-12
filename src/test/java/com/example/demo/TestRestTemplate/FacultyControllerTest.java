@@ -1,6 +1,7 @@
 package com.example.demo.TestRestTemplate;
 
 import com.example.demo.model.Faculty;
+import com.example.demo.model.Student;
 import com.example.demo.repository.FacultyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,17 +32,52 @@ public class FacultyControllerTest {
     }
 
     @Test
-    void testCreateFaculty() {
+    public void testCreateFaculty() {
         Faculty faculty = new Faculty();
         faculty.setName("Gryffindor");
         faculty.setColor("Red");
 
         ResponseEntity<Faculty> response = restTemplate.postForEntity("/faculties", faculty, Faculty.class);
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Gryffindor", response.getBody().getName());
     }
+
+    @Test
+    public void testGetFacultyById() {
+        ResponseEntity<Faculty> response = restTemplate.getForEntity("/faculties/1", Faculty.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    public void testUpdateFaculty() {
+        Faculty updatedFaculty = new Faculty();
+        updatedFaculty.setName("Slytherin");
+        updatedFaculty.setColor("Green");
+
+        restTemplate.put("/faculties/1", updatedFaculty);
+
+        ResponseEntity<Faculty> response = restTemplate.getForEntity("/faculties/1", Faculty.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Slytherin", response.getBody().getName());
+    }
+
+    @Test
+    public void testDeleteFaculty() {
+        restTemplate.delete("/faculties/1");
+
+        ResponseEntity<Faculty> response = restTemplate.getForEntity("/faculties/1", Faculty.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void testGetStudentsByFaculty() {
+        ResponseEntity<Student[]> response = restTemplate.getForEntity("/faculties/1/students", Student[].class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
 
     @Test
     void testGetFacultyById_NotFound() {

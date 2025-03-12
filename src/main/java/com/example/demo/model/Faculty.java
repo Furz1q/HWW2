@@ -19,7 +19,7 @@ public class Faculty {
 
     public Faculty() {}
 
-    public Faculty(long l, String name, String color) {
+    public Faculty(Long l, String name, String color) {
         this.name = name;
         this.color = color;
     }
